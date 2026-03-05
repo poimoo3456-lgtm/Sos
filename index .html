@@ -3,153 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NattDev Rescue</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>NattDev Rescue System</title>
+    <!-- ใช้ CSS ภายในตัวไฟล์เอง ไม่โหลดจากภายนอกเพื่อป้องกัน 404 -->
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
-        .card { background: white; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .btn-red { background-color: #ef4444; color: white; font-weight: bold; transition: all 0.2s; }
-        .btn-red:active { transform: scale(0.95); opacity: 0.9; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            width: 95%;
+            max-width: 450px;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo { color: #e11d48; font-size: 24px; font-weight: 800; margin-bottom: 5px; }
+        .sub-logo { color: #64748b; font-size: 12px; letter-spacing: 2px; margin-bottom: 25px; }
+        
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus { border-color: #e11d48; }
+
+        .btn-submit {
+            background-color: #e11d48;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+        }
+        .btn-submit:active { transform: scale(0.98); }
+
+        .btn-tool {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn-tool.active { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+
         .hidden { display: none; }
+        .success-box { padding: 40px 10px; }
+        .success-icon { font-size: 60px; color: #22c55e; margin-bottom: 15px; }
+        
+        #preview-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="w-full max-w-md card p-6 text-center">
-        <!-- Brand -->
-        <div class="mb-4">
-            <h1 class="text-2xl font-black text-red-600 tracking-wider">NATTDEV RESCUE</h1>
-            <div class="h-1 w-20 bg-red-600 mx-auto rounded-full mt-1"></div>
-        </div>
+    <div class="container">
+        <div id="ui-form">
+            <div class="logo">NATTDEV RESCUE</div>
+            <div class="sub-logo">SYSTEM V.5 (STABLE)</div>
 
-        <!-- Form Page -->
-        <div id="formPage">
-            <p class="text-slate-500 text-sm mb-6">กรอกข้อมูลเพื่อขอความช่วยเหลือด่วน</p>
-            <form id="rescueForm" class="text-left space-y-4">
-                <input type="text" id="name" placeholder="ชื่อผู้แจ้ง" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-red-500">
-                <input type="tel" id="tel" placeholder="เบอร์โทรศัพท์" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-red-500">
-                
-                <select id="type" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-red-500">
-                    <option value="">-- ประเภทเหตุ --</option>
-                    <option value="อุบัติเหตุ">อุบัติเหตุรถยนต์/จยย.</option>
-                    <option value="ไฟไหม้">เหตุเพลิงไหม้</option>
-                    <option value="ป่วยฉุกเฉิน">ผู้ป่วยฉุกเฉิน/หมดสติ</option>
-                    <option value="อื่นๆ">ขอความช่วยเหลืออื่นๆ</option>
-                </select>
-
-                <textarea id="loc" placeholder="สถานที่เกิดเหตุ" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-red-500"></textarea>
-
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <button type="button" id="gpsBtn" class="p-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-xl font-bold">แชร์พิกัด</button>
-                    <button type="button" id="photoBtn" onclick="document.getElementById('fileInput').click()" class="p-3 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-bold">แนบรูปภาพ</button>
-                    <input type="file" id="fileInput" class="hidden" accept="image/*">
+            <form id="emergencyForm">
+                <div class="form-group">
+                    <label>ชื่อผู้แจ้ง</label>
+                    <input type="text" id="name" required placeholder="ระบุชื่อของคุณ">
+                </div>
+                <div class="form-group">
+                    <label>เบอร์โทรศัพท์ติดต่อ</label>
+                    <input type="tel" id="tel" required placeholder="0XX-XXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>ประเภทเหตุ</label>
+                    <select id="type" required>
+                        <option value="">-- เลือกประเภท --</option>
+                        <option value="อุบัติเหตุ">อุบัติเหตุรถยนต์/มอเตอร์ไซค์</option>
+                        <option value="ป่วยฉุกเฉิน">ผู้ป่วยฉุกเฉิน/หมดสติ</option>
+                        <option value="เพลิงไหม้">เหตุเพลิงไหม้</option>
+                        <option value="อื่นๆ">ขอความช่วยเหลืออื่นๆ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>สถานที่เกิดเหตุ</label>
+                    <textarea id="loc" rows="2" required placeholder="ระบุที่อยู่หรือจุดสังเกต"></textarea>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full btn-red py-4 rounded-xl text-lg shadow-lg shadow-red-200 mt-2">ยืนยันแจ้งกู้ภัย</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button type="button" id="btn-gps" class="btn-tool">📍 แชร์พิกัด</button>
+                    <button type="button" id="btn-photo" class="btn-tool" onclick="document.getElementById('file-input').click()">📷 ถ่ายภาพ</button>
+                </div>
+                <input type="file" id="file-input" class="hidden" accept="image/*">
+                <img id="preview-img">
+
+                <button type="submit" id="submit-btn" class="btn-submit">ยืนยันแจ้งกู้ภัย</button>
             </form>
         </div>
 
-        <!-- Success Page -->
-        <div id="successPage" class="hidden py-8">
-            <div class="text-6xl mb-4 text-green-500">✓</div>
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">ส่งข้อมูลสำเร็จ</h2>
-            <p class="text-slate-500 mb-8">เจ้าหน้าที่กำลังตรวจสอบ<br>กรุณารอรับสายโทรศัพท์</p>
-            <button onclick="resetApp()" class="w-full p-4 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200">กลับไปหน้าแรก</button>
+        <!-- หน้าจอเมื่อสำเร็จ -->
+        <div id="ui-success" class="hidden success-box">
+            <div class="success-icon">✔</div>
+            <h2 style="margin: 0;">ส่งข้อมูลสำเร็จ</h2>
+            <p style="color: #64748b; margin: 15px 0 30px;">เจ้าหน้าที่รับเรื่องแล้ว<br>โปรดรอรับสายโทรศัพท์</p>
+            <button onclick="window.location.reload()" class="btn-submit" style="background: #64748b;">แจ้งเหตุใหม่</button>
         </div>
     </div>
 
     <script>
         const BOT_TOKEN = "8732929782:AAEFZMGYW4oUvssPejul92U6z7qKKga96bE";
         const CHAT_ID = "7967010433";
-        let gpsData = "ไม่ได้แชร์พิกัด";
-        let imageFile = null;
+        let latLon = "ไม่ได้ระบุ";
+        let imageToUpload = null;
 
-        // Image Selection
-        document.getElementById('fileInput').onchange = (e) => {
-            imageFile = e.target.files[0];
-            if(imageFile) document.getElementById('photoBtn').innerText = "✅ เลือกรูปแล้ว";
-        };
-
-        // GPS Selection
-        document.getElementById('gpsBtn').onclick = function() {
+        // ดึงพิกัด
+        document.getElementById('btn-gps').onclick = function() {
+            const el = this;
             if (navigator.geolocation) {
-                this.innerText = "...";
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    gpsData = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    this.innerText = "✅ บันทึกพิกัดแล้ว";
-                    this.classList.replace('bg-blue-50', 'bg-green-50');
-                    this.classList.replace('text-blue-600', 'text-green-600');
-                }, () => { alert("กรุณาเปิด GPS"); this.innerText = "แชร์พิกัด"; });
+                el.innerText = "กำลังระบุ...";
+                navigator.geolocation.getCurrentPosition((p) => {
+                    latLon = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+                    el.innerText = "✅ เก็บพิกัดแล้ว";
+                    el.classList.add('active');
+                }, () => { alert("กรุณาเปิด GPS"); el.innerText = "📍 แชร์พิกัด"; });
             }
         };
 
-        // Voice Notification
-        function playThaiVoice() {
-            const msg = new SpeechSynthesisUtterance("แจ้งเหตุเสร็จแล้วครับ กรุณารอเจ้าหน้าที่ติดต่อกลับ");
-            msg.lang = 'th-TH';
-            window.speechSynthesis.speak(msg);
+        // จัดการรูปภาพ
+        document.getElementById('file-input').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                imageToUpload = file;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.getElementById('preview-img');
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('btn-photo').innerText = "✅ บันทึกรูปแล้ว";
+                    document.getElementById('btn-photo').classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // เสียงพูด
+        function speak() {
+            if ('speechSynthesis' in window) {
+                const msg = new SpeechSynthesisUtterance("ส่งข้อมูลสำเร็จแล้วครับ โปรดรอเจ้าหน้าที่ติดต่อกลับ");
+                msg.lang = 'th-TH';
+                window.speechSynthesis.speak(msg);
+            }
         }
 
-        // Reset App
-        function resetApp() {
-            document.getElementById('rescueForm').reset();
-            gpsData = "ไม่ได้แชร์พิกัด";
-            imageFile = null;
-            document.getElementById('photoBtn').innerText = "แนบรูปภาพ";
-            document.getElementById('gpsBtn').innerText = "แชร์พิกัด";
-            document.getElementById('gpsBtn').className = "p-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-xl font-bold";
-            document.getElementById('successPage').classList.add('hidden');
-            document.getElementById('formPage').classList.remove('hidden');
-        }
-
-        // Submit Form
-        document.getElementById('rescueForm').onsubmit = async (e) => {
+        // ส่งฟอร์ม
+        document.getElementById('emergencyForm').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
+            const btn = document.getElementById('submit-btn');
             btn.disabled = true;
-            btn.innerText = "กำลังส่ง...";
+            btn.innerText = "กำลังส่งข้อมูล...";
 
-            const name = document.getElementById('name').value;
-            const tel = document.getElementById('tel').value;
-            const type = document.getElementById('type').value;
-            const loc = document.getElementById('loc').value;
-
-            const text = `🚨 *แจ้งเหตุ NattDev* 🚨\n👤 ชื่อ: ${name}\n📞 เบอร์: ${tel}\n⚠️ เหตุ: ${type}\n📍 สถานที่: ${loc}\n🗺️ พิกัด: ${gpsData}`;
+            const msgText = `🚨 *แจ้งเหตุ NattDev V.5* 🚨\n👤 ชื่อ: ${document.getElementById('name').value}\n📞 เบอร์: ${document.getElementById('tel').value}\n⚠️ เหตุ: ${document.getElementById('type').value}\n📍 สถานที่: ${document.getElementById('loc').value}\n🗺️ พิกัด: ${latLon}`;
 
             try {
                 let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 let body;
 
-                if (imageFile) {
+                if (imageToUpload) {
                     url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
                     const fd = new FormData();
                     fd.append('chat_id', CHAT_ID);
-                    fd.append('photo', imageFile);
-                    fd.append('caption', text);
+                    fd.append('photo', imageToUpload);
+                    fd.append('caption', msgText);
                     fd.append('parse_mode', 'Markdown');
                     body = fd;
                 } else {
-                    body = JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' });
+                    body = JSON.stringify({ chat_id: CHAT_ID, text: msgText, parse_mode: 'Markdown' });
                 }
 
                 const res = await fetch(url, {
                     method: 'POST',
-                    headers: imageFile ? {} : { 'Content-Type': 'application/json' },
+                    headers: imageToUpload ? {} : { 'Content-Type': 'application/json' },
                     body: body
                 });
 
                 if (res.ok) {
-                    document.getElementById('formPage').classList.add('hidden');
-                    document.getElementById('successPage').classList.remove('hidden');
-                    playThaiVoice();
+                    document.getElementById('ui-form').classList.add('hidden');
+                    document.getElementById('ui-success').classList.remove('hidden');
+                    speak();
                 } else {
-                    alert("ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่");
-                    btn.disabled = false;
-                    btn.innerText = "ยืนยันแจ้งกู้ภัย";
+                    alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
                 }
             } catch (err) {
-                alert("การเชื่อมต่อมีปัญหา");
+                alert("การส่งล้มเหลว ตรวจสอบอินเทอร์เน็ต");
+            } finally {
                 btn.disabled = false;
                 btn.innerText = "ยืนยันแจ้งกู้ภัย";
             }
