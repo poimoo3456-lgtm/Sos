@@ -2,313 +2,249 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rescue Emergency | NattDev Omni-Channel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rescue Emergency | NattDev Ultra Stable</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-        }
         body { 
-            font-family: 'Kanit', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior-y: contain;
+            font-family: 'Kanit', sans-serif;
+            background-color: #f8fafc;
+            touch-action: manipulation;
         }
-        /* Glassmorphism Effect */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .emergency-pulse {
+            animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            display: inline-block;
+            animation: dot-blink 1.4s infinite both;
+        }
+        .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dot-blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+        .btn-shadow {
+            box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.3);
         }
         @media (prefers-color-scheme: dark) {
             body { background-color: #020617; }
-            .glass-panel {
-                background: rgba(15, 23, 42, 0.9);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-            }
-            .text-main { color: #f8fafc; }
-            .text-sub { color: #94a3b8; }
-            .input-field { background-color: #1e293b; color: white; }
-        }
-        /* Animation Pulse */
-        .pulse-red {
-            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
-            animation: pulse-red 2s infinite;
-        }
-        @keyframes pulse-red {
-            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); }
-            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
-        /* Smooth Height Transition */
-        .container-transition {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        /* Image Preview Responsive */
-        #preview {
-            max-height: 250px;
-            width: 100%;
-            object-fit: cover;
+            .card-main { background-color: #1e293b; border: 1px solid #334155; }
+            .input-box { background-color: #0f172a; color: white; border: 1px solid #334155; }
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-[100dvh] flex flex-col">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Header Branding -->
-    <header class="w-full py-4 px-6 flex justify-between items-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">ND</div>
-            <span class="font-extrabold text-slate-800 dark:text-white tracking-tight">NattDev <span class="text-red-600">Rescue</span></span>
+    <!-- Header -->
+    <div class="mb-6 flex flex-col items-center space-y-2">
+        <div class="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center text-white emergency-pulse">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         </div>
-        <div class="flex items-center space-x-2">
-            <span class="inline-block w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Server Online</span>
-        </div>
-    </header>
+        <h1 class="text-xl font-black text-red-600 tracking-[0.2em] uppercase">NattDev Rescue</h1>
+    </div>
 
-    <!-- Main Content Wrapper -->
-    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-12">
-        <div id="mainContainer" class="w-full max-w-xl glass-panel p-6 sm:p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden container-transition">
-            
-            <!-- Loading State Overlay -->
-            <div id="loadingOverlay" class="hidden absolute inset-0 z-40 bg-white/80 dark:bg-slate-900/80 flex flex-col items-center justify-center backdrop-blur-sm">
-                <div class="w-12 h-12 border-4 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
-                <p class="mt-4 font-bold text-red-600 animate-pulse">กำลังส่งข้อมูลขอความช่วยเหลือ...</p>
-            </div>
+    <!-- Main App Container -->
+    <div id="appContainer" class="w-full max-w-lg card-main bg-white p-6 sm:p-8 rounded-[2rem] shadow-2xl transition-all duration-300">
+        
+        <!-- Form UI -->
+        <div id="formSection">
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">แจ้งเหตุฉุกเฉิน</h2>
+            <p class="text-slate-500 text-sm mb-6">ระบุข้อมูลเพื่อให้กู้ภัยติดต่อกลับได้รวดเร็ว</p>
 
-            <!-- UI: Form แจ้งเหตุ -->
-            <div id="formUI" class="block animate-in fade-in duration-500">
-                <div class="mb-8">
-                    <h1 class="text-3xl font-black text-slate-800 dark:text-white">แจ้งเหตุฉุกเฉิน</h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">กดแชร์พิกัดและถ่ายรูปเพื่อให้กู้ภัยมาถึงเร็วที่สุด</p>
+            <form id="rescueForm" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="text" id="name" placeholder="ชื่อผู้แจ้ง" required class="input-box w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-red-500 transition-all">
+                    <input type="tel" id="tel" placeholder="เบอร์โทรศัพท์" required class="input-box w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-red-500 transition-all">
                 </div>
 
-                <form id="rescueForm" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">ชื่อผู้แจ้ง</label>
-                            <input type="text" id="reporterName" required class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl border-none outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-all" placeholder="ชื่อของคุณ">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">เบอร์โทรศัพท์</label>
-                            <input type="tel" id="contactNumber" required class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl border-none outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-all" placeholder="0XX-XXXXXXX">
-                        </div>
-                    </div>
+                <select id="type" required class="input-box w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-red-500 transition-all">
+                    <option value="">-- เลือกประเภทเหตุ --</option>
+                    <option value="🚑 อุบัติเหตุรุนแรง">อุบัติเหตุรุนแรง</option>
+                    <option value="🔥 อัคคีภัย">อัคคีภัย</option>
+                    <option value="🩺 เจ็บป่วยฉุกเฉิน">เจ็บป่วยฉุกเฉิน</option>
+                    <option value="🆘 ขอความช่วยเหลืออื่นๆ">ขอความช่วยเหลืออื่นๆ</option>
+                </select>
 
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">ประเภทเหตุ</label>
-                        <select id="reportType" required class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl border-none outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-all">
-                            <option value="">-- เลือกเหตุการณ์ --</option>
-                            <option value="🚑 อุบัติเหตุรุนแรง">อุบัติเหตุรุนแรง</option>
-                            <option value="🔥 อัคคีภัย / ไฟไหม้">อัคคีภัย / ไฟไหม้</option>
-                            <option value="🩺 เจ็บป่วย / หมดสติ">เจ็บป่วย / หมดสติ</option>
-                            <option value="🆘 ขอความช่วยเหลืออื่น ๆ">ขอความช่วยเหลืออื่น ๆ</option>
-                        </select>
-                    </div>
+                <textarea id="loc" placeholder="ระบุสถานที่เกิดเหตุ" required rows="2" class="input-box w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-red-500 transition-all"></textarea>
 
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">รายละเอียดสถานที่</label>
-                        <textarea id="location" required rows="2" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl border-none outline-none focus:ring-2 focus:ring-red-500 dark:text-white transition-all" placeholder="ระบุจุดสังเกต หรือที่อยู่ที่ชัดเจน"></textarea>
-                    </div>
-
-                    <!-- Action Tools -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <button type="button" id="gpsBtn" class="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold py-4 rounded-2xl flex flex-col items-center justify-center space-y-1 border border-blue-100 dark:border-blue-800 transition-all hover:bg-blue-100">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            <span class="text-[10px]" id="gpsLabel">กดแชร์พิกัด</span>
-                        </button>
-                        <label class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold py-4 rounded-2xl flex flex-col items-center justify-center space-y-1 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-200 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
-                            <span class="text-[10px]" id="photoLabel">ถ่ายภาพ</span>
-                            <input type="file" id="photoInput" accept="image/*" class="hidden">
-                        </label>
-                    </div>
-                    <img id="preview" class="hidden rounded-2xl border-2 border-slate-100 dark:border-slate-700 shadow-inner">
-
-                    <button type="submit" id="submitBtn" class="w-full bg-red-600 text-white font-black py-5 rounded-[2rem] shadow-xl hover:bg-red-700 active:scale-95 transition-all text-xl pulse-red">
-                        ยืนยันแจ้งกู้ภัย
+                <div class="flex gap-2">
+                    <button type="button" id="gpsBtn" class="flex-1 bg-blue-50 text-blue-600 font-bold py-3 rounded-xl flex items-center justify-center space-x-2 border border-blue-100 dark:bg-blue-900/20 dark:border-blue-800 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                        <span id="gpsTxt">แชร์พิกัด</span>
                     </button>
-                </form>
-            </div>
-
-            <!-- UI: Success State -->
-            <div id="successUI" class="hidden animate-in zoom-in duration-500 text-center py-6">
-                <div class="w-24 h-24 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                    <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                    <label class="flex-1 bg-slate-50 text-slate-600 font-bold py-3 rounded-xl flex items-center justify-center space-x-2 border border-slate-200 cursor-pointer dark:bg-slate-700 dark:border-slate-600 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                        <span id="photoTxt">แนบรูป</span>
+                        <input type="file" id="photo" accept="image/*" class="hidden">
+                    </label>
                 </div>
-                <h2 class="text-3xl font-black text-slate-800 dark:text-white">ส่งเหตุสำเร็จ</h2>
-                <p class="text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">ข้อมูลของคุณถึงมือเจ้าหน้าที่แล้ว<br><span class="text-red-600 font-bold">โปรดแสตนบายรอรับสาย</span></p>
-                
-                <button id="resetBtn" class="mt-8 w-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-4 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
-                    ต้องการแจ้งเหตุเพิ่มเติม
+                <img id="preview" class="hidden w-full h-32 object-cover rounded-xl mt-2">
+
+                <button type="submit" id="submitBtn" class="w-full bg-red-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-red-700 active:scale-95 transition-all text-xl btn-shadow">
+                    ส่งสัญญาณแจ้งกู้ภัย
                 </button>
+            </form>
+        </div>
+
+        <!-- Success UI (Initially Hidden) -->
+        <div id="successSection" class="hidden text-center py-10 space-y-6">
+            <div class="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto shadow-2xl animate-bounce">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
             </div>
+            <h2 class="text-3xl font-black text-slate-800 dark:text-white">ส่งเหตุสำเร็จ!</h2>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">เจ้าหน้าที่ได้รับข้อมูลของคุณแล้ว<br>กรุณารอรับสายโทรศัพท์</p>
+            <button id="newReportBtn" class="w-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold py-4 rounded-xl hover:bg-slate-200 transition-all">
+                แจ้งเหตุใหม่เพิ่มเติม
+            </button>
         </div>
-    </main>
 
-    <!-- Footer Credit -->
-    <footer class="p-6 text-center">
-        <div class="flex flex-col items-center space-y-1">
-            <p class="text-[9px] text-slate-400 uppercase tracking-[0.4em]">Official System Developer</p>
-            <p class="text-sm font-bold text-slate-800 dark:text-slate-200">NattDev <span class="text-red-600">Corporation</span></p>
-        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center opacity-40">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">NattDev Technical System</p>
     </footer>
-
-    <!-- Emergency Floating Button for Mobile -->
-    <a href="tel:1669" class="fixed bottom-6 right-6 sm:hidden z-50">
-        <div class="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center shadow-2xl pulse-red">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
-        </div>
-    </a>
 
     <script>
         const BOT_TOKEN = "8732929782:AAEFZMGYW4oUvssPejul92U6z7qKKga96bE";
         const CHAT_ID = "7967010433";
-        const API_KEY = ""; // Provided by system
-
-        let gpsStr = "ไม่ได้ระบุพิกัด";
-        let photoData = null;
-
-        // ฟังก์ชันล้างค่าและเริ่มใหม่ (No Reload)
-        function startNewReport() {
-            document.getElementById('rescueForm').reset();
-            photoData = null;
-            gpsStr = "ไม่ได้ระบุพิกัด";
-            
-            document.getElementById('preview').classList.add('hidden');
-            document.getElementById('photoLabel').innerText = "ถ่ายภาพ";
-            document.getElementById('gpsLabel').innerText = "กดแชร์พิกัด";
-            
-            const gpsBtn = document.getElementById('gpsBtn');
-            gpsBtn.classList.replace('bg-green-50', 'bg-blue-50');
-            gpsBtn.classList.replace('text-green-600', 'text-blue-600');
-
-            document.getElementById('successUI').classList.add('hidden');
-            document.getElementById('formUI').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        let currentGps = "ไม่ระบุพิกัด";
+        let photoFile = null;
 
         // Image Handling
-        document.getElementById('photoInput').addEventListener('change', (e) => {
+        document.getElementById('photo').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                photoData = file;
+                photoFile = file;
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     const img = document.getElementById('preview');
                     img.src = ev.target.result;
                     img.classList.remove('hidden');
-                    document.getElementById('photoLabel').innerText = "✅ บันทึกรูปแล้ว";
+                    document.getElementById('photoTxt').innerText = "✅ บันทึกแล้ว";
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // GPS Location Handling
+        // GPS Handling
         document.getElementById('gpsBtn').addEventListener('click', function() {
-            const label = document.getElementById('gpsLabel');
+            const btnTxt = document.getElementById('gpsTxt');
             if (navigator.geolocation) {
-                label.innerText = "กำลังหาพิกัด...";
+                btnTxt.innerText = "กำลังหา...";
                 navigator.geolocation.getCurrentPosition((pos) => {
-                    gpsStr = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    label.innerText = "✅ บันทึกพิกัดแล้ว";
+                    currentGps = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    btnTxt.innerText = "✅ บันทึกพิกัด";
                     this.classList.replace('bg-blue-50', 'bg-green-50');
                     this.classList.replace('text-blue-600', 'text-green-600');
-                }, () => { 
-                    alert("ไม่สามารถเข้าถึงพิกัดได้ กรุณาเปิด Location Service");
-                    label.innerText = "❌ ระบุพิกัดล้มเหลว";
-                }, { enableHighAccuracy: true });
+                }, () => { btnTxt.innerText = "❌ ระบุไม่ได้"; }, { enableHighAccuracy: true });
             }
         });
 
-        // Gemini TTS Voice Logic
-        async function sayConfirmation() {
-            const text = "แจ้งเหตุเสร็จแล้วครับ กรุณารอเจ้าหน้าที่ติดต่อกลับ";
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${API_KEY}`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: text }] }],
-                        generationConfig: {
-                            responseModalities: ["AUDIO"],
-                            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } }
-                        },
-                        model: "gemini-2.5-flash-preview-tts"
-                    })
-                });
-                const result = await response.json();
-                const audioData = result.candidates[0].content.parts[0].inlineData.data;
-                const audio = new Audio("data:audio/wav;base64," + audioData);
-                audio.play();
-            } catch (e) {
-                // Fallback to browser TTS if API fails
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'th-TH';
-                window.speechSynthesis.speak(msg);
-            }
+        // Native Browser Voice Synthesis (เสถียรที่สุดในทุกอุปกรณ์)
+        function playVoice() {
+            const speech = new SpeechSynthesisUtterance("แจ้งเหตุเสร็จแล้วครับ กรุณารอเจ้าหน้าที่ติดต่อกลับ");
+            speech.lang = 'th-TH';
+            speech.rate = 1;
+            window.speechSynthesis.speak(speech);
         }
 
         // Submit Logic
         document.getElementById('rescueForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            document.getElementById('loadingOverlay').classList.remove('hidden');
+            const btn = document.getElementById('submitBtn');
+            const originalTxt = btn.innerText;
+            
+            btn.disabled = true;
+            btn.innerHTML = 'ส่งข้อมูล <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
 
-            const reporter = document.getElementById('reporterName').value;
-            const phone = document.getElementById('contactNumber').value;
-            const type = document.getElementById('reportType').value;
-            const loc = document.getElementById('location').value;
+            const name = document.getElementById('name').value;
+            const tel = document.getElementById('tel').value;
+            const type = document.getElementById('type').value;
+            const loc = document.getElementById('loc').value;
 
-            const message = `🚨 *แจ้งเหตุกู้ภัย (NattDev Universal)* 🚨\n` +
+            const caption = `🚨 *แจ้งเหตุกู้ภัย (NattDev)* 🚨\n` +
                             `━━━━━━━━━━━━━━━\n` +
-                            `👤 ผู้แจ้ง: ${reporter}\n` +
-                            `📞 เบอร์: [${phone}](tel:${phone})\n` +
+                            `👤 ผู้แจ้ง: ${name}\n` +
+                            `📞 เบอร์: [${tel}](tel:${tel})\n` +
                             `⚠️ เหตุ: ${type}\n` +
                             `📍 สถานที่: ${loc}\n` +
-                            `🗺️ พิกัด: [กดเพื่อนำทาง](${gpsStr})\n` +
+                            `🗺️ พิกัด: [เปิดแผนที่](${currentGps})\n` +
                             `━━━━━━━━━━━━━━━\n` +
-                            `📱 DEVICE: ${navigator.userAgent.indexOf("Mobi") > -1 ? "Mobile" : "Desktop"}\n` +
                             `🕒 ${new Date().toLocaleString('th-TH')}`;
 
             try {
                 let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 let body;
 
-                if (photoData) {
+                if (photoFile) {
                     url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
                     const fd = new FormData();
                     fd.append('chat_id', CHAT_ID);
-                    fd.append('photo', photoData);
-                    fd.append('caption', message);
+                    fd.append('photo', photoFile);
+                    fd.append('caption', caption);
                     fd.append('parse_mode', 'Markdown');
                     body = fd;
                 } else {
-                    body = JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown' });
+                    body = JSON.stringify({ chat_id: CHAT_ID, text: caption, parse_mode: 'Markdown' });
                 }
 
                 const res = await fetch(url, {
                     method: 'POST',
-                    headers: photoData ? {} : { 'Content-Type': 'application/json' },
+                    headers: photoFile ? {} : { 'Content-Type': 'application/json' },
                     body: body
                 });
 
                 if (res.ok) {
-                    document.getElementById('loadingOverlay').classList.add('hidden');
-                    document.getElementById('formUI').classList.add('hidden');
-                    document.getElementById('successUI').classList.remove('hidden');
-                    
-                    sayConfirmation();
-                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                    document.getElementById('formSection').classList.add('hidden');
+                    document.getElementById('successSection').classList.remove('hidden');
+                    playVoice();
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                 }
             } catch (err) {
-                alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาโทร 1669 ทันที");
-                document.getElementById('loadingOverlay').classList.add('hidden');
+                alert("ล้มเหลว! กรุณาโทร 1669 ทันที");
+                btn.disabled = false;
+                btn.innerText = originalTxt;
             }
         });
 
-        document.getElementById('resetBtn').addEventListener('click', startNewReport);
+        // Reset App Logic (No Reload)
+        document.getElementById('newReportBtn').addEventListener('click', () => {
+            // Reset Form & Vars
+            document.getElementById('rescueForm').reset();
+            photoFile = null;
+            currentGps = "ไม่ระบุพิกัด";
+            
+            // Reset UI States
+            document.getElementById('preview').classList.add('hidden');
+            document.getElementById('preview').src = "";
+            document.getElementById('photoTxt').innerText = "แนบรูป";
+            document.getElementById('gpsTxt').innerText = "แชร์พิกัด";
+            
+            const gpsBtn = document.getElementById('gpsBtn');
+            gpsBtn.className = "flex-1 bg-blue-50 text-blue-600 font-bold py-3 rounded-xl flex items-center justify-center space-x-2 border border-blue-100 dark:bg-blue-900/20 dark:border-blue-800 transition-all";
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.innerText = "ส่งสัญญาณแจ้งกู้ภัย";
+
+            // Toggle Sections
+            document.getElementById('successSection').classList.add('hidden');
+            document.getElementById('formSection').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
 </body>
 </html>
